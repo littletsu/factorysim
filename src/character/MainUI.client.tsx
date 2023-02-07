@@ -193,8 +193,6 @@ class MainUI extends Roact.PureComponent<{}, MainUIState> {
 						| undefined;
 					if (!itemModel) return;
 					this.setState({ editingItem: itemModel });
-					// const itemId = itemModel.GetAttribute("id") as string | undefined;
-					// if (!itemId) return;
 				}
 			},
 			false,

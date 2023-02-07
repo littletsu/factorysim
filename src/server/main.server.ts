@@ -1,5 +1,5 @@
 import { DataStoreService, Players, ReplicatedStorage, Workspace } from "@rbxts/services";
-import { getModel, getSaveID } from "shared/utils";
+import { createItemClone, getModel, getSaveID } from "shared/utils";
 import { DeserializeCFrame, SerializedCFrame } from "shared/net/remotes";
 import { GameDataStoreList, PlacedItemsStore, PlayerInventoryStore } from "shared/net/datastore";
 
@@ -21,7 +21,7 @@ placedItemsFolder.Parent = Workspace;
 
 Players.PlayerAdded.Connect((player) => {
 	if (saveID.Value === "none") {
-		const save = tostring(player.UserId) + "nwn";
+		const save = tostring(player.UserId) + "kwk";
 		saveID.Value = save;
 		print(`Loading ${saveID.Value} save`);
 		for (const gameDs of GameDataStoreList) {
@@ -36,12 +36,7 @@ Players.PlayerAdded.Connect((player) => {
 			const [key, [item, pivot]] = tuple;
 			print("Placing ", pivot, item, key);
 			const pivotCFrame = DeserializeCFrame(pivot);
-			const itemModelClone = getModel(item)?.Clone();
-			if (!itemModelClone) return print(`${item} missing?`);
-			itemModelClone.PivotTo(pivotCFrame);
-			itemModelClone.Parent = placedItemsFolder;
-			itemModelClone.Name = tostring(key);
-			itemModelClone.SetAttribute("id", item);
+			createItemClone(item, tostring(key), pivotCFrame);
 		}
 	}
 });

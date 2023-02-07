@@ -2,7 +2,7 @@ import inspect from "@rbxts/inspect";
 
 import { PlacedItemsStore, PlayerInventory, PlayerInventoryStore } from "shared/net/datastore";
 import { Remotes, SerializeCFrame } from "shared/net/remotes";
-import { getModel, getPlacedItemsFolder } from "shared/utils";
+import { createItemClone, getModel, getPlacedItemsFolder } from "shared/utils";
 
 Remotes.Server.Get("GetPlayerInventory").SetCallback((player): PlayerInventory | undefined => {
 	const data = PlayerInventoryStore.getPlayer(player);
@@ -16,12 +16,8 @@ Remotes.Server.Get("PlaceInventoryItem").SetCallback((player, item, pivot): bool
 	inventory[item] = inventory[item] - 1;
 	PlayerInventoryStore.setPlayer(player, inventory);
 	const itemKey = tostring(DateTime.now().UnixTimestamp);
-	const itemModelClone = getModel(item)?.Clone();
-	if (!itemModelClone) return false;
-	itemModelClone.PivotTo(pivot);
-	itemModelClone.Parent = getPlacedItemsFolder();
-	itemModelClone.Name = tostring(itemKey);
-	itemModelClone.SetAttribute("id", item);
+
+	createItemClone(item, itemKey, pivot);
 
 	const placedItems = PlacedItemsStore.getSave();
 	if (placedItems === undefined) {

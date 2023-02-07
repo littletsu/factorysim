@@ -46,7 +46,6 @@ export class PlacedItemMenu extends Roact.PureComponent<PlacedItemMenuProps> {
 					ViewportModel={this.props.item}
 					Position={new UDim2(0, 0, 0, 0)}
 				>
-					<camera Key={"Camera"} CFrame={new CFrame(new Vector3(0, 0, 20))} />
 					<uisizeconstraint MaxSize={new Vector2(150, 150)} />
 					<uiaspectratioconstraint AspectType={"ScaleWithParentSize"} />
 				</ModelViewportFrame>

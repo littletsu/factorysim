@@ -16,6 +16,16 @@ export function findUntilParentIs(instance: Instance, parentName: string): Insta
 	return instance.Parent.Name === parentName ? instance : findUntilParentIs(instance.Parent, parentName);
 }
 
+export function createItemClone(item: string, key: string, pivot: CFrame) {
+	const itemModelClone = getModel(item)?.Clone();
+	if (!itemModelClone) return warn(`Couldn't find model "${item}"`);
+	itemModelClone.PivotTo(pivot);
+	itemModelClone.Parent = getPlacedItemsFolder();
+	itemModelClone.Name = tostring(key);
+	itemModelClone.SetAttribute("id", item);
+	return itemModelClone;
+}
+
 // export function getModelData(model: Model) {
 
 // }

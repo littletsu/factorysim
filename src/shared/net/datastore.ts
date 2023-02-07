@@ -107,6 +107,7 @@ export interface PlayerInventory {
 }
 const defaultPlayerInventory: PlayerInventory = {
 	cube: 5,
+	chicken: 15,
 };
 export const PlayerInventoryStore = new GameDataStore<PlayerInventory>("PlayerInventory", defaultPlayerInventory);
 

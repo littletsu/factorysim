@@ -35,8 +35,13 @@ export class ModelViewportFrame extends Roact.PureComponent<ModelViewportFramePr
 		const viewportFrame = this.state.ref.getValue();
 		if (viewportFrame === undefined) return;
 		itemModelClone.Parent = viewportFrame;
-		const camera = viewportFrame.FindFirstChild("Camera") as Camera;
-		if (camera === undefined) return;
+
+		const camera = new Instance("Camera");
+		camera.CFrame =
+			(itemModelClone.FindFirstChild("Camera") as CFrameValue | undefined)?.Value ||
+			(viewportFrame.FindFirstChild("Camera") as Camera | undefined)?.CFrame ||
+			new CFrame(new Vector3(0, 0, 20));
+		camera.Parent = viewportFrame;
 		viewportFrame.CurrentCamera = camera;
 	}
 

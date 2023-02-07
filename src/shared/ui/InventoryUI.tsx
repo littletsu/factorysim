@@ -48,7 +48,6 @@ class InventoryItem extends Roact.Component<InventoryItemProps, InventoryItemSta
 				Position={new UDim2((this.props.i % 4) * 0.25, 0, math.floor(this.props.i / 4) * 0.25, 0)}
 				ViewportModel={this.props.item}
 			>
-				<camera Key={"Camera"} CFrame={new CFrame(new Vector3(0, 0, 20))} />
 				<textlabel
 					BackgroundTransparency={1}
 					Size={new UDim2(0.3, 0, 0.2, 0)}
