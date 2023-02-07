@@ -26,6 +26,17 @@ export function createItemClone(item: string, key: string, pivot: CFrame) {
 	return itemModelClone;
 }
 
+export function createSelectionBox(parent: Instance, color3: Color3) {
+	const selectionBox = new Instance("SelectionBox");
+	selectionBox.Name = "SelectionBox";
+	selectionBox.Color3 = color3;
+	selectionBox.LineThickness = 0.02;
+	selectionBox.Adornee = parent;
+	selectionBox.Parent = parent;
+
+	return selectionBox;
+}
+
 // export function getModelData(model: Model) {
 
 // }

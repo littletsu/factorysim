@@ -3,6 +3,7 @@ import { getModel } from "shared/utils";
 
 interface ModelViewportFrameState {
 	ref: Roact.Ref<ViewportFrame>;
+	lastModel: string | number | undefined;
 }
 
 interface ModelViewportFrameProps {
@@ -24,25 +25,45 @@ export class ModelViewportFrame extends Roact.PureComponent<ModelViewportFramePr
 
 		this.state = {
 			ref: Roact.createRef<ViewportFrame>(),
+			lastModel: undefined,
 		};
 		this.mouseHovering = false;
 	}
 
-	public didMount(): void {
+	private updateViewportFrame() {
+		print(`Updating viewport ${this.props.ViewportModel}`);
+		const viewportFrame = this.state.ref.getValue();
+		if (viewportFrame === undefined) return;
+
+		viewportFrame.FindFirstChild("ViewportElements")?.Destroy();
+
+		const folder = new Instance("Folder");
+		folder.Name = "ViewportElements";
+		folder.Parent = viewportFrame;
+
 		const itemModelClone = getModel(this.props.ViewportModel)?.Clone();
 		this.itemModelClone = itemModelClone;
 		if (itemModelClone === undefined) return;
-		const viewportFrame = this.state.ref.getValue();
-		if (viewportFrame === undefined) return;
-		itemModelClone.Parent = viewportFrame;
+		itemModelClone.Parent = folder;
 
 		const camera = new Instance("Camera");
 		camera.CFrame =
 			(itemModelClone.FindFirstChild("Camera") as CFrameValue | undefined)?.Value ||
 			(viewportFrame.FindFirstChild("Camera") as Camera | undefined)?.CFrame ||
 			new CFrame(new Vector3(0, 0, 20));
-		camera.Parent = viewportFrame;
+		camera.Parent = folder;
 		viewportFrame.CurrentCamera = camera;
+		this.setState({ lastModel: this.props.ViewportModel });
+	}
+
+	public didMount(): void {
+		this.updateViewportFrame();
+	}
+
+	public didUpdate(): void {
+		if (this.props.ViewportModel !== this.state.lastModel) {
+			this.updateViewportFrame();
+		}
 	}
 
 	public willUnmount(): void {

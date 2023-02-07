@@ -4,7 +4,7 @@ import { SidebarButton } from "shared/ui/SidebarUI";
 import { Remotes } from "shared/net/remotes";
 import inspect from "@rbxts/inspect";
 import { InventoryItemMenuAction, InventoryUI } from "shared/ui/InventoryUI";
-import { findUntilParentIs, getModel, getPlacedItemsFolder } from "shared/utils";
+import { createSelectionBox, findUntilParentIs, getModel, getPlacedItemsFolder } from "shared/utils";
 import { PlayerInventory } from "shared/net/datastore";
 import { PlacedItemMenu, PlacedItemMenuAction } from "shared/ui/PlacedItemMenu";
 
@@ -144,11 +144,13 @@ class MainUI extends Roact.PureComponent<{}, MainUIState> {
 	}
 
 	private async toggleInventory() {
-		if (this.state.inventory)
+		this.cleanEditingItem();
+		if (this.state.inventory) {
 			return this.setState({
 				inventory: false,
 				editingItem: false,
 			});
+		}
 		const inventory = await Remotes.Client.Get("GetPlayerInventory").CallServerAsync();
 		if (!inventory) return warn("Could not GetPlayerInventory from server");
 		print(inspect(inventory));
@@ -179,7 +181,12 @@ class MainUI extends Roact.PureComponent<{}, MainUIState> {
 					break;
 			}
 		}
+		this.cleanEditingItem();
 		this.setState({ editingItem: false });
+	}
+
+	private cleanEditingItem() {
+		if (this.state.editingItem) this.state.editingItem.FindFirstChild("SelectionBox")?.Destroy();
 	}
 
 	private bindShowPlacedItemMenu() {
@@ -192,6 +199,8 @@ class MainUI extends Roact.PureComponent<{}, MainUIState> {
 						| Model
 						| undefined;
 					if (!itemModel) return;
+					this.cleanEditingItem();
+					createSelectionBox(itemModel, new Color3(59, 225, 219));
 					this.setState({ editingItem: itemModel });
 				}
 			},
